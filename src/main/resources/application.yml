@@ -1,0 +1,9 @@
+server:
+  port: 8080
+spring:
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+logging:
+  level:
+    com.safetynet.alerts: info
