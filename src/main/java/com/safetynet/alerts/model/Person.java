@@ -1,5 +1,9 @@
 package com.safetynet.alerts.model;
 
+/**
+ * Represents a person in the SafetyNet system.
+ * Contains personal information including name, contact details, and address.
+ */
 public class Person {
     private String firstName;
     private String lastName;

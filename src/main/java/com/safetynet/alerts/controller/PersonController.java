@@ -8,6 +8,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * REST controller for managing Person entities.
+ * Provides endpoints for CRUD operations on person data.
+ */
 @RestController
 @RequestMapping("/person")
 public class PersonController {
@@ -21,39 +25,60 @@ public class PersonController {
 
     @PostMapping
     public String addPerson(@RequestBody Person newPerson) {
-        dataLoaderService.getPersons().add(newPerson);
-        logger.info("Added new person: {} {}", newPerson.getFirstName(), newPerson.getLastName());
-        return "Person added successfully.";
+        logger.info("Request received to add person: {} {}", newPerson.getFirstName(), newPerson.getLastName());
+        try {
+            dataLoaderService.getPersons().add(newPerson);
+            logger.info("Successfully added person: {} {}", newPerson.getFirstName(), newPerson.getLastName());
+            return "Person added successfully.";
+        } catch (Exception e) {
+            logger.error("Error adding person: {} {}", newPerson.getFirstName(), newPerson.getLastName(), e);
+            throw e;
+        }
     }
 
     @PutMapping
     public String updatePerson(@RequestBody Person updatedPerson) {
-        List<Person> persons = dataLoaderService.getPersons();
-        for (Person p : persons) {
-            if (p.getFirstName().equalsIgnoreCase(updatedPerson.getFirstName())
-                    && p.getLastName().equalsIgnoreCase(updatedPerson.getLastName())) {
-                p.setAddress(updatedPerson.getAddress());
-                p.setCity(updatedPerson.getCity());
-                p.setZip(updatedPerson.getZip());
-                p.setPhone(updatedPerson.getPhone());
-                p.setEmail(updatedPerson.getEmail());
-                logger.info("Updated person: {} {}", p.getFirstName(), p.getLastName());
-                return "Person updated successfully.";
+        logger.info("Request received to update person: {} {}", updatedPerson.getFirstName(), updatedPerson.getLastName());
+        try {
+            List<Person> persons = dataLoaderService.getPersons();
+            for (Person p : persons) {
+                if (p.getFirstName().equalsIgnoreCase(updatedPerson.getFirstName())
+                        && p.getLastName().equalsIgnoreCase(updatedPerson.getLastName())) {
+                    logger.debug("Person found, updating fields");
+                    p.setAddress(updatedPerson.getAddress());
+                    p.setCity(updatedPerson.getCity());
+                    p.setZip(updatedPerson.getZip());
+                    p.setPhone(updatedPerson.getPhone());
+                    p.setEmail(updatedPerson.getEmail());
+                    logger.info("Successfully updated person: {} {}", p.getFirstName(), p.getLastName());
+                    return "Person updated successfully.";
+                }
             }
+            logger.info("Person not found: {} {}", updatedPerson.getFirstName(), updatedPerson.getLastName());
+            return "Person not found.";
+        } catch (Exception e) {
+            logger.error("Error updating person: {} {}", updatedPerson.getFirstName(), updatedPerson.getLastName(), e);
+            throw e;
         }
-        return "Person not found.";
     }
 
     @DeleteMapping
     public String deletePerson(@RequestParam String firstName, @RequestParam String lastName) {
-        boolean removed = dataLoaderService.getPersons().removeIf(
-                p -> p.getFirstName().equalsIgnoreCase(firstName) && p.getLastName().equalsIgnoreCase(lastName)
-        );
-        if (removed) {
-            logger.info("Deleted person: {} {}", firstName, lastName);
-            return "Person deleted successfully.";
-        } else {
-            return "Person not found.";
+        logger.info("Request received to delete person: {} {}", firstName, lastName);
+        try {
+            boolean removed = dataLoaderService.getPersons().removeIf(
+                    p -> p.getFirstName().equalsIgnoreCase(firstName) && p.getLastName().equalsIgnoreCase(lastName)
+            );
+            if (removed) {
+                logger.info("Successfully deleted person: {} {}", firstName, lastName);
+                return "Person deleted successfully.";
+            } else {
+                logger.info("Person not found: {} {}", firstName, lastName);
+                return "Person not found.";
+            }
+        } catch (Exception e) {
+            logger.error("Error deleting person: {} {}", firstName, lastName, e);
+            throw e;
         }
     }
 }

@@ -1,5 +1,9 @@
 package com.safetynet.alerts.model;
 
+/**
+ * Represents a firestation mapping in the SafetyNet system.
+ * Maps a specific address to a fire station number for emergency response.
+ */
 public class Firestation {
     private String address;
     private String station;

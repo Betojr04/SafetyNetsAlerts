@@ -2,6 +2,10 @@ package com.safetynet.alerts.model;
 
 import java.util.List;
 
+/**
+ * Represents a medical record in the SafetyNet system.
+ * Contains medical information including birthdate, medications, and allergies for a person.
+ */
 public class MedicalRecord {
     private String firstName;
     private String lastName;
